@@ -77,4 +77,21 @@ class VKMarSkill
         }
     }
 
+    /**
+     * Возвращает языковой стандарт клиента /
+     * Returns the client's language standard
+     *
+     * @return string
+     *
+     * @throws MarusiaRequestException
+     */
+    public function getClientLocale() : string {
+        if (isset($this->meta->locale)) {
+            return $this->meta->locale;
+        } else {
+            throw new MarusiaRequestException('Locale is not defined');
+        }
+    }
+
+
 }
