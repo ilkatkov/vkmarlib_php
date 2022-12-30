@@ -19,6 +19,7 @@ class VKMarSkill
     private $response;
     private $responseText;
     private $responseTts;
+    private $buttons;
 
     /**
      * Создает объект для работы с запросами от Маруси /
@@ -168,16 +169,10 @@ class VKMarSkill
      * Returns the prepared text for the Marusia response
      *
      * @return string text
-     *
-     * @throws MaruisaResponseException
      */
-    public function getResponseText(): string
+    private function getResponseText(): string
     {
-        if (isset($this->responseText)) {
-            return $this->responseText;
-        } else {
-            throw new MaruisaResponseException("ResponseText is not defined");
-        }
+        return $this->responseText;
     }
 
     /**
@@ -205,19 +200,71 @@ class VKMarSkill
      * Returns the prepared TTS for the Marusia response
      *
      * @return string TTS
-     *
-     * @throws MaruisaResponseException
      */
-    public function getResponseTts(): string
+    private function getResponseTts(): string
     {
-        if (isset($this->responseTts)) {
-            return $this->responseTts;
+        return $this->responseTts;
+    }
+
+
+    /**
+     * Добавляет кнопку с именем $title /
+     * Adds a button named $title
+     *
+     * @param string $title
+     * @return void
+     *
+     * @throws MarusiaValidationException
+     */
+    public function addResponseButton(string $title): void
+    {
+        if (strlen($title) > 0) {
+            $button = array("title" => $title);
+
+            if (!isset($this->buttons)) {
+                $this->buttons = array($button);
+            } else {
+                $this->buttons[] = $button;
+            }
         } else {
-            throw new MaruisaResponseException("ResponseTts is not defined");
+            throw new MarusiaValidationException("Button's title cannot be empty");
         }
     }
 
-    public function getJsonResponse($end_session = false)
+    /**
+     * Добавляет кнопки с именами из массива $titles /
+     * Adds buttons with names from the $titles array
+     *
+     * @param array $titles
+     * @return void
+     *
+     * @throws MarusiaValidationException
+     */
+    public function addResponseButtons(array $titles): void
+    {
+        if (count($titles) > 0) {
+            foreach ($titles as $title) {
+                $this->addResponseButton($title);
+            }
+        } else {
+            throw new MarusiaValidationException('Array $titles cannot be empty');
+        }
+
+    }
+
+    /**
+     * Возвращает массив кнопок для ответа Марусе /
+     * Returns an array of buttons to respond to Marusia
+     *
+     * @return array buttons
+     */
+    private function getResponseButtons(): array
+    {
+        return $this->buttons;
+    }
+
+
+    public function getJsonResponse(bool $end_session = false)
     {
         $this->response = array(
             "session" => $this->getSession(),
@@ -233,6 +280,10 @@ class VKMarSkill
 
         if (isset($this->responseTts)) {
             $this->response["response"]["tts"] = $this->getResponseTts();
+        }
+
+        if (isset($this->buttons)) {
+            $this->response["response"]["buttons"] = $this->getResponseButtons();
         }
 
         return json_encode($this->response);
