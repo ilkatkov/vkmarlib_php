@@ -8,7 +8,7 @@ namespace ilkatkov\VKMarLib\Exceptions;
  *
  * @package ilkatkov\VKMarLib\Exceptions
  */
-class RequestException extends \Exception
+class MarusiaRequestException extends \Exception
 {
 
 }

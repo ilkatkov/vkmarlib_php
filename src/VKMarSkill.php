@@ -2,7 +2,7 @@
 
 namespace ilkatkov\VKMarLib;
 
-use ilkatkov\VKMarLib\Exceptions\RequestException;
+use ilkatkov\VKMarLib\Exceptions\MarusiaRequestException;
 
 class VKMarSkill
 {
@@ -17,7 +17,7 @@ class VKMarSkill
      *
      * @param string $source источник чтения запроса от Маруси / the source of the request reading from Marusia
      *
-     * @throws RequestException
+     * @throws MarusiaRequestException
      */
     public function __construct(string $source)
     {
@@ -25,22 +25,22 @@ class VKMarSkill
         if (isset($jsonData->version)) {
             $this->version = $jsonData->version;
         } else {
-            throw new RequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
         }
         if (isset($jsonData->session)) {
             $this->session = $jsonData->session;
         } else {
-            throw new RequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
         }
         if (isset($jsonData->request->nlu->tokens)) {
             $this->nluTokens = $jsonData->request->nlu->tokens;
         } else {
-            throw new RequestException('Invalid parse \'request->nlu->tokens\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'request->nlu->tokens\' in MarusiaRequest from source: ' . $source);
         }
         if (isset($jsonData->meta)) {
             $this->meta = $jsonData->meta;
         } else {
-            throw new RequestException('Invalid parse \'meta\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'meta\' in MarusiaRequest from source: ' . $source);
         }
     }
 
@@ -50,14 +50,14 @@ class VKMarSkill
      *
      * @return array
      *
-     * @throws RequestException
+     * @throws MarusiaRequestException
      */
     public function getNluTokens(): array
     {
         if (isset($this->nluTokens)) {
             return $this->nluTokens;
         } else {
-            throw new RequestException('nluTokens is not defined');
+            throw new MarusiaRequestException('nluTokens is not defined');
         }
     }
 
@@ -67,13 +67,13 @@ class VKMarSkill
      *
      * @return string
      *
-     * @throws RequestException
+     * @throws MarusiaRequestException
      */
     public function getClientCity() : string {
         if (isset($this->meta->_city_ru)) {
             return $this->meta->_city_ru;
         } else {
-            throw new RequestException('City is not defined');
+            throw new MarusiaRequestException('City is not defined');
         }
     }
 
