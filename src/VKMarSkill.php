@@ -93,5 +93,19 @@ class VKMarSkill
         }
     }
 
-
+    /**
+     * Возвращает часовой пояс клиента /
+     * Returns the client's time zone
+     *
+     * @return string
+     *
+     * @throws MarusiaRequestException
+     */
+    public function getClientTimezone() : string {
+        if (isset($this->meta->timezone)) {
+            return $this->meta->timezone;
+        } else {
+            throw new MarusiaRequestException('Timezone is not defined');
+        }
+    }
 }
