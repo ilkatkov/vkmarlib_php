@@ -12,14 +12,15 @@ require_once "Exceptions/MarusiaValidationException.php";
 
 class VKMarSkill
 {
-    private $version;
-    private $session;
-    private $meta;
-    private $nluTokens;
-    private $response;
-    private $responseText;
-    private $responseTts;
-    private $buttons;
+    private string $version;
+    private object $session;
+    private object $meta;
+    private array $nluTokens;
+    private array $response;
+    private string $responseText;
+    private string $responseTts;
+    private array $buttons;
+    private bool $endSession = false;
 
     /**
      * Создает объект для работы с запросами от Маруси /
@@ -186,7 +187,7 @@ class VKMarSkill
      *
      * @throws MarusiaValidationException
      */
-    public function setResponseTts(string $tts)
+    public function setResponseTts(string $tts): void
     {
         if (strlen($tts) > 0) {
             $this->responseTts = $tts;
@@ -263,14 +264,35 @@ class VKMarSkill
         return $this->buttons;
     }
 
+    /**
+     * Устанавливает конец сессии /
+     * Sets the end of the session
+     *
+     * @return void
+     */
+    public function setEndSession(): void
+    {
+        $this->endSession = true;
+    }
 
-    public function getJsonResponse(bool $end_session = false)
+    /**
+     * Возвращает статус конца сессии /
+     * Returns the end of session status
+     *
+     * @return bool endSession's status
+     */
+    private function getEndSession(): bool
+    {
+        return $this->endSession;
+    }
+
+    public function getJsonResponse(): string
     {
         $this->response = array(
             "session" => $this->getSession(),
             "version" => $this->getVersion(),
             "response" => array(
-                "end_session" => $end_session
+                "end_session" => $this->getEndSession()
             ),
         );
 
