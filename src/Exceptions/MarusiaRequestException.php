@@ -1,6 +1,6 @@
 <?php
 
-namespace ilkatkov\VKMarLib\Exceptions;
+namespace VKMarLib\Exceptions;
 
 /**
  * Исключение, возникающее при работе с запросом от Маруси /
