@@ -16,9 +16,11 @@ class VKMarSkill
     private object $session;
     private object $meta;
     private object $request;
+    private object $state;
     private string $responseText;
     private string $responseTts;
     private array $buttons;
+    private array $responseSessionStates = [];
     private bool $endSession = false;
 
     /**
@@ -53,6 +55,11 @@ class VKMarSkill
             $this->meta = $jsonData->meta;
         } else {
             throw new MarusiaRequestException('Invalid parse \'meta\' in MarusiaRequest from source: ' . $source);
+        }
+        if (isset($jsonData->state->session)) {
+            $this->responseSessionStates = (array)$jsonData->state->session;
+        } else {
+            throw new MarusiaRequestException('Invalid parse \'state\' in MarusiaRequest from source: ' . $source);
         }
     }
 
@@ -121,6 +128,7 @@ class VKMarSkill
      * Возвращает true, если  хотя бы одно слово из аргументов находится в nluTokens /
      * Returns true if at least one word of the arguments is in nluTokens
      *
+     * @param ...$values
      * @return bool result
      *
      * @throws MarusiaRequestException
@@ -320,6 +328,74 @@ class VKMarSkill
         return $this->endSession;
     }
 
+    /**
+     * Возвращает состояния (state) запроса /
+     * Returns the states of request
+     *
+     * @return object states
+     */
+    private function getState() : object {
+        return $this->state;
+    }
+
+    /**
+     * Возвращает состояния сессии (session state) запроса /
+     * Returns the session states of request
+     *
+     * @return object session states
+     */
+    public function getSessionState() : object {
+        return $this->getState()->session;
+    }
+
+    /**
+     * Устанавливает значение $value по ключу $key в массив состояний сессии /
+     * Sets $value by $key to the array of session states
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setResponseSessionState(string $key, $value) : void {
+        $this->responseSessionStates[$key] = $value;
+    }
+
+    /**
+     * Удаляет состояние сессии по ключу $key /
+     * Deletes the session state by $key
+     *
+     * @param string $key
+     * @return void
+     * @throws MaruisaResponseException
+     */
+    public function delResponseSessionState(string $key) : void {
+        if (isset($this->responseSessionStates[$key])) {
+            unset($this->responseSessionStates[$key]);
+        } else {
+            throw new MaruisaResponseException("key " . $key . " not defined in responseSessionStates");
+        }
+    }
+
+    /**
+     * Очищает состояния сессии /
+     * Cleares session states
+     *
+     * @return void
+     */
+    public function clearResponseSessionState() : void {
+        $this->responseSessionStates = [];
+    }
+
+    /**
+     * Возвращает ассоциативный массив состояний сессии /
+     * Returns an associative array of session states
+     *
+     * @return array
+     */
+    private function getResponseSessionStates() : array {
+        return $this->responseSessionStates;
+    }
+
     public function getJsonResponse(): string
     {
         $this->response = array(
@@ -340,6 +416,10 @@ class VKMarSkill
 
         if (isset($this->buttons)) {
             $this->response["response"]["buttons"] = $this->getResponseButtons();
+        }
+
+        if (isset($this->responseSessionStates)) {
+            $this->response["session_state"] = $this->getResponseSessionStates();
         }
 
         return json_encode($this->response);
