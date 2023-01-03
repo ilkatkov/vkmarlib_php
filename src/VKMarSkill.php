@@ -15,8 +15,7 @@ class VKMarSkill
     private string $version;
     private object $session;
     private object $meta;
-    private array $nluTokens;
-    private array $response;
+    private object $request;
     private string $responseText;
     private string $responseTts;
     private array $buttons;
@@ -45,10 +44,10 @@ class VKMarSkill
         } else {
             throw new MarusiaRequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
         }
-        if (isset($jsonData->request->nlu->tokens)) {
-            $this->nluTokens = $jsonData->request->nlu->tokens;
+        if (isset($jsonData->request)) {
+            $this->request = $jsonData->request;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'request->nlu->tokens\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'request\' in MarusiaRequest from source: ' . $source);
         }
         if (isset($jsonData->meta)) {
             $this->meta = $jsonData->meta;
@@ -80,6 +79,28 @@ class VKMarSkill
     }
 
     /**
+     * Возвращает request Маруси /
+     * Returns request from Marusia
+     *
+     * @return object request
+     */
+    private function getRequest(): object
+    {
+        return $this->request;
+    }
+
+    /**
+     * Возвращает meta запроса Маруси /
+     * Returns meta from Marusia's request
+     *
+     * @return object meta
+     */
+    private function getMeta(): object
+    {
+        return $this->meta;
+    }
+
+    /**
      * Возвращает распознаные слова в виде массива строк /
      * Returns recognized words as an array of strings
      *
@@ -89,11 +110,24 @@ class VKMarSkill
      */
     public function getNluTokens(): array
     {
-        if (isset($this->nluTokens)) {
-            return $this->nluTokens;
+        if (isset($this->getRequest()->nlu->tokens)) {
+            return $this->getRequest()->nlu->tokens;
         } else {
             throw new MarusiaRequestException('nluTokens is not defined');
         }
+    }
+
+    /**
+     * Возвращает true, если  хотя бы одно слово из аргументов находится в nluTokens /
+     * Returns true if at least one word of the arguments is in nluTokens
+     *
+     * @return bool result
+     *
+     * @throws MarusiaRequestException
+     */
+    public function existInNluTokens(...$values): bool
+    {
+        return count(array_intersect($values, $this->getNluTokens())) > 0;
     }
 
     /**
@@ -106,8 +140,8 @@ class VKMarSkill
      */
     public function getClientCity(): string
     {
-        if (isset($this->meta->_city_ru)) {
-            return $this->meta->_city_ru;
+        if (isset($this->getMeta()->_city_ru)) {
+            return $this->getMeta()->_city_ru;
         } else {
             throw new MarusiaRequestException('City is not defined');
         }
@@ -123,8 +157,8 @@ class VKMarSkill
      */
     public function getClientLocale(): string
     {
-        if (isset($this->meta->locale)) {
-            return $this->meta->locale;
+        if (isset($this->getMeta()->locale)) {
+            return $this->getMeta()->locale;
         } else {
             throw new MarusiaRequestException('Locale is not defined');
         }
@@ -140,8 +174,8 @@ class VKMarSkill
      */
     public function getClientTimezone(): string
     {
-        if (isset($this->meta->timezone)) {
-            return $this->meta->timezone;
+        if (isset($this->getMeta()->timezone)) {
+            return $this->getMeta()->timezone;
         } else {
             throw new MarusiaRequestException('Timezone is not defined');
         }
