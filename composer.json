@@ -1,0 +1,13 @@
+{
+    "name": "ilkatkov/vkmarlib",
+    "description": "Marusia VK Library for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ilya Katkov"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
