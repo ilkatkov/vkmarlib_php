@@ -16,11 +16,10 @@ class VKMarSkill
     private object $session;
     private object $meta;
     private object $request;
-    private object $state;
     private string $responseText;
     private string $responseTts;
     private array $buttons;
-    private array $responseSessionStates = [];
+    private array $sessionState = [];
     private bool $endSession = false;
 
     /**
@@ -57,9 +56,9 @@ class VKMarSkill
             throw new MarusiaRequestException('Invalid parse \'meta\' in MarusiaRequest from source: ' . $source);
         }
         if (isset($jsonData->state->session)) {
-            $this->responseSessionStates = (array)$jsonData->state->session;
+            $this->sessionState = (array)$jsonData->state->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'state\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'sessionState\' in MarusiaRequest from source: ' . $source);
         }
     }
 
@@ -328,24 +327,16 @@ class VKMarSkill
         return $this->endSession;
     }
 
-    /**
-     * Возвращает состояния (state) запроса /
-     * Returns the states of request
-     *
-     * @return object states
-     */
-    private function getState() : object {
-        return $this->state;
-    }
 
     /**
      * Возвращает состояния сессии (session state) запроса /
      * Returns the session states of request
      *
-     * @return object session states
+     * @return array session states
      */
-    public function getSessionState() : object {
-        return $this->getState()->session;
+    public function getSessionStates(): array
+    {
+        return $this->sessionState;
     }
 
     /**
@@ -356,8 +347,9 @@ class VKMarSkill
      * @param mixed $value
      * @return void
      */
-    public function setResponseSessionState(string $key, $value) : void {
-        $this->responseSessionStates[$key] = $value;
+    public function setResponseSessionState(string $key, $value): void
+    {
+        $this->sessionState[$key] = $value;
     }
 
     /**
@@ -368,22 +360,24 @@ class VKMarSkill
      * @return void
      * @throws MaruisaResponseException
      */
-    public function delResponseSessionState(string $key) : void {
-        if (isset($this->responseSessionStates[$key])) {
-            unset($this->responseSessionStates[$key]);
+    public function delResponseSessionState(string $key): void
+    {
+        if (isset($this->sessionState[$key])) {
+            unset($this->sessionState[$key]);
         } else {
-            throw new MaruisaResponseException("key " . $key . " not defined in responseSessionStates");
+            throw new MaruisaResponseException("key " . $key . " not defined in sessionState");
         }
     }
 
     /**
      * Очищает состояния сессии /
-     * Cleares session states
+     * Clears session states
      *
      * @return void
      */
-    public function clearResponseSessionState() : void {
-        $this->responseSessionStates = [];
+    public function clearResponseSessionState(): void
+    {
+        $this->sessionState = [];
     }
 
     /**
@@ -392,13 +386,14 @@ class VKMarSkill
      *
      * @return array
      */
-    private function getResponseSessionStates() : array {
-        return $this->responseSessionStates;
+    private function getResponseSessionStates(): array
+    {
+        return $this->sessionState;
     }
 
     public function getJsonResponse(): string
     {
-        $this->response = array(
+        $response = array(
             "session" => $this->getSession(),
             "version" => $this->getVersion(),
             "response" => array(
@@ -407,22 +402,20 @@ class VKMarSkill
         );
 
         if (isset($this->responseText)) {
-            $this->response["response"]["text"] = $this->getResponseText();
+            $response["response"]["text"] = $this->getResponseText();
         }
 
         if (isset($this->responseTts)) {
-            $this->response["response"]["tts"] = $this->getResponseTts();
+            $response["response"]["tts"] = $this->getResponseTts();
         }
 
         if (isset($this->buttons)) {
-            $this->response["response"]["buttons"] = $this->getResponseButtons();
+            $response["response"]["buttons"] = $this->getResponseButtons();
         }
 
-        if (isset($this->responseSessionStates)) {
-            $this->response["session_state"] = $this->getResponseSessionStates();
-        }
+        $response["session_state"] = $this->getResponseSessionStates();
 
-        return json_encode($this->response);
+        return json_encode($response);
     }
 
 }
