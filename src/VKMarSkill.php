@@ -20,6 +20,8 @@ class VKMarSkill
     private string $responseTts;
     private array $buttons;
     private array $sessionState = [];
+    private array $userState = [];
+    private array $push = [];
     private bool $endSession = false;
 
     /**
@@ -59,6 +61,11 @@ class VKMarSkill
             $this->sessionState = (array)$jsonData->state->session;
         } else {
             throw new MarusiaRequestException('Invalid parse \'sessionState\' in MarusiaRequest from source: ' . $source);
+        }
+        if (isset($jsonData->state->user)) {
+            $this->userState = (array)$jsonData->state->user;
+        } else {
+            throw new MarusiaRequestException('Invalid parse \'userState\' in MarusiaRequest from source: ' . $source);
         }
     }
 
@@ -332,6 +339,7 @@ class VKMarSkill
      * Возвращает состояния сессии (session state) запроса /
      * Returns the session states of request
      *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return array session states
      */
     public function getSessionStates(): array
@@ -343,6 +351,7 @@ class VKMarSkill
      * Устанавливает значение $value по ключу $key в массив состояний сессии /
      * Sets $value by $key to the array of session states
      *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
      * @param mixed $value
      * @return void
@@ -356,6 +365,7 @@ class VKMarSkill
      * Удаляет состояние сессии по ключу $key /
      * Deletes the session state by $key
      *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
      * @return void
      * @throws MaruisaResponseException
@@ -373,6 +383,7 @@ class VKMarSkill
      * Очищает состояния сессии /
      * Clears session states
      *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return void
      */
     public function clearResponseSessionState(): void
@@ -381,9 +392,69 @@ class VKMarSkill
     }
 
     /**
+     * Возвращает состояния пользователя (user state) запроса /
+     * Returns the user states of request
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @return array user states
+     */
+    public function getUserStates(): array
+    {
+        return $this->userState;
+    }
+
+    /**
+     * Устанавливает значение $value по ключу $key в массив состояний пользователя /
+     * Sets $value by $key to the array of user states
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setResponseUserState(string $key, $value): void
+    {
+        $this->userState[$key] = $value;
+    }
+
+    /**
+     * Удаляет состояние пользователя по ключу $key /
+     * Deletes the user state by $key
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @param string $key
+     * @return void
+     * @throws MaruisaResponseException
+     */
+    public function delResponseUserState(string $key): void
+    {
+        if (isset($this->userState[$key])) {
+            $this->userState[$key] = null;
+        } else {
+            throw new MaruisaResponseException("key " . $key . " not defined in userState");
+        }
+    }
+
+    /**
+     * Очищает состояния пользователя /
+     * Clears session states
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @return void
+     */
+    public function clearResponseUserState(): void
+    {
+        $keys = array_keys($this->getUserStates());
+        for ($i = 0; $i < count($keys); $i++) {
+            $this->userState[$keys[$i]] = null;
+        }
+    }
+
+    /**
      * Возвращает ассоциативный массив состояний сессии /
      * Returns an associative array of session states
      *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return array
      */
     private function getResponseSessionStates(): array
@@ -391,7 +462,56 @@ class VKMarSkill
         return $this->sessionState;
     }
 
-    public function getJsonResponse(): string
+    /**
+     * Возвращает ассоциативный массив состояний пользователя /
+     * Returns an associative array of user states
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @return array
+     */
+    private function getResponseUserStates(): array
+    {
+        return $this->userState;
+    }
+
+    /**
+     * Устанвливает пуш уведомление с текстом $text и нагрузкой $payload
+     *
+     * @link https://dev.vk.com/marusia/notifications
+     * @param string $text
+     * @param array $payload
+     * @throws MarusiaValidationException
+     * @return void
+     */
+    public function setPush(string $text, array $payload) : void {
+        if (strlen($text) > 0) {
+            $this->push["push_text"] = $text;
+        }
+        else {
+            throw new MarusiaValidationException("Text for Push cannot be empty");
+        }
+
+        if (count(array_keys($payload)) > 0) {
+            $this->push["payload"] = $payload;
+        }
+        else {
+            throw new MarusiaValidationException("Payload for Push cannot be empty");
+        }
+
+    }
+
+    /**
+     * Возвращает установленное пуш уведомление /
+     * Returns the installed push notification
+     *
+     * @link https://dev.vk.com/marusia/notifications
+     * @return array
+     */
+    private function getPush() : array {
+        return $this->push;
+    }
+
+    public function getResponseJson(): string
     {
         $response = array(
             "session" => $this->getSession(),
@@ -409,11 +529,16 @@ class VKMarSkill
             $response["response"]["tts"] = $this->getResponseTts();
         }
 
+        if (count(array_keys($this->push)) > 0) {
+            $response["response"]["push"] = $this->getPush();
+        }
+
         if (isset($this->buttons)) {
             $response["response"]["buttons"] = $this->getResponseButtons();
         }
 
         $response["session_state"] = $this->getResponseSessionStates();
+        $response["user_state_update"] = $this->getResponseUserStates();
 
         return json_encode($response);
     }
