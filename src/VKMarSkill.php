@@ -483,19 +483,18 @@ class VKMarSkill
      * @throws MarusiaValidationException
      * @return void
      */
-    public function setPush(string $text, array $payload) : void {
+    public function setPush(string $text, array $payload): void
+    {
         if (strlen($text) > 0) {
             $this->push["push_text"] = $text;
-        }
-        else {
+        } else {
             throw new MarusiaValidationException("Text for Push cannot be empty");
         }
 
-        if (count(array_keys($payload)) > 0) {
+        if (count(array_keys($payload)) == 1) {
             $this->push["payload"] = $payload;
-        }
-        else {
-            throw new MarusiaValidationException("Payload for Push cannot be empty");
+        } else {
+            throw new MarusiaValidationException("Length of payload for Push should be equal 1");
         }
 
     }
@@ -507,10 +506,18 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/notifications
      * @return array
      */
-    private function getPush() : array {
+    private function getPush(): array
+    {
         return $this->push;
     }
 
+    /**
+     * Формирует и возвращает JSON ответ для Маруси /
+     * Generates and returns a JSON response for Marusia
+     *
+     * @link https://dev.vk.com/marusia/api#Структура%20ответа
+     * @return string
+     */
     public function getResponseJson(): string
     {
         $response = array(
