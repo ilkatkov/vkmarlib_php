@@ -8,7 +8,7 @@ namespace VKMarLib\Exceptions;
  *
  * @package VKMarLib\Exceptions
  */
-class MaruisaResponseException extends \Exception
+class MarusiaResponseException extends \Exception
 {
 
 }

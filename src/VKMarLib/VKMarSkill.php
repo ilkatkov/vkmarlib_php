@@ -2,13 +2,9 @@
 
 namespace VKMarLib;
 
-use VKMarLib\Exceptions\MaruisaResponseException;
+use VKMarLib\Exceptions\MarusiaResponseException;
 use VKMarLib\Exceptions\MarusiaRequestException;
 use VKMarLib\Exceptions\MarusiaValidationException;
-
-require_once "Exceptions/MarusiaRequestException.php";
-require_once "Exceptions/MarusiaResponseException.php";
-require_once "Exceptions/MarusiaValidationException.php";
 
 class VKMarSkill
 {
@@ -368,14 +364,14 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
      * @return void
-     * @throws MaruisaResponseException
+     * @throws MarusiaResponseException
      */
     public function delResponseSessionState(string $key): void
     {
         if (isset($this->sessionState[$key])) {
             unset($this->sessionState[$key]);
         } else {
-            throw new MaruisaResponseException("key " . $key . " not defined in sessionState");
+            throw new MarusiaResponseException("key " . $key . " not defined in sessionState");
         }
     }
 
@@ -424,14 +420,14 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @param string $key
      * @return void
-     * @throws MaruisaResponseException
+     * @throws MarusiaResponseException
      */
     public function delResponseUserState(string $key): void
     {
         if (isset($this->userState[$key])) {
             $this->userState[$key] = null;
         } else {
-            throw new MaruisaResponseException("key " . $key . " not defined in userState");
+            throw new MarusiaResponseException("key " . $key . " not defined in userState");
         }
     }
 
