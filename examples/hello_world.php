@@ -4,7 +4,12 @@ include_once __DIR__ . '../vendor/autoload.php';
 
 use VKMarLib\VKMarSkill;
 
-$m = new VKMarSkill('php://input');
+/**
+ * Устанавливаем источник запроса от Маруси
+ */
+$source = 'php://input';
+
+$m = new VKMarSkill($source);
 $m->setResponseText("Hello, world!");
 $m->setEndSession();
 echo $m->getResponseJson();

@@ -56,7 +56,8 @@ class VKMarSkill
         if (isset($jsonData->state->session)) {
             $this->sessionState = (array)$jsonData->state->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'sessionState\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'sessionState\' in MarusiaRequest from source: ' . $source
+            );
         }
         if (isset($jsonData->state->user)) {
             $this->userState = (array)$jsonData->state->user;
