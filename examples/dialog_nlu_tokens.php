@@ -18,6 +18,8 @@ if ($m->existInNluTokens("привет", "здравствуйте")) {
 } elseif ($m->existInNluTokens("пока", "стоп")) {
     $m->setResponseText("Пока-пока!");
     $m->setEndSession();
+} else {
+    $m->setResponseText("Даже не знаю, что вам на это ответить.");
 }
 
 echo $m->getResponseJson();
