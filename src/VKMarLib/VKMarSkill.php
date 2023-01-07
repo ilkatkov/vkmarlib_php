@@ -46,7 +46,7 @@ class VKMarSkill
         if (isset($jsonData->request)) {
             $this->request = $jsonData->request;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'request\' from MarusiaReques');
+            throw new MarusiaRequestException('Invalid parse \'request\' from MarusiaRequest');
         }
         if (isset($jsonData->meta)) {
             $this->meta = $jsonData->meta;
