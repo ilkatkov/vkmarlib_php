@@ -4,12 +4,8 @@ include_once __DIR__ . '../vendor/autoload.php';
 
 use VKMarLib\VKMarSkill;
 
-/**
- * Устанавливаем источник запроса от Маруси
- */
-$source = 'php://input';
-
-$m = new VKMarSkill($source);
+$content = file_get_contents('php://input');
+$m = new VKMarSkill($content);
 
 if ($m->existInNluTokens("привет", "здравствуйте")) {
     $m->setResponseText("Добрый день! Это пример диалога.");

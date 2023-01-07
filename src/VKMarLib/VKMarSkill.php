@@ -26,43 +26,42 @@ class VKMarSkill
      *
      * @link https://dev.vk.com/marusia/api
      *
-     * @param string $source источник чтения запроса от Маруси / the source of the request reading from Marusia
+     * @param string $json запрос от Маруси в виде JSON / request from Marusia in the form of JSON
      *
      * @throws MarusiaRequestException
      */
-    public function __construct(string $source)
+    public function __construct(string $json)
     {
-        $jsonData = json_decode(file_get_contents($source));
+        $jsonData = json_decode($json);
         if (isset($jsonData->version)) {
             $this->version = $jsonData->version;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'version\' from MarusiaRequest');
         }
         if (isset($jsonData->session)) {
             $this->session = $jsonData->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'version\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'version\' from MarusiaRequest');
         }
         if (isset($jsonData->request)) {
             $this->request = $jsonData->request;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'request\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'request\' from MarusiaReques');
         }
         if (isset($jsonData->meta)) {
             $this->meta = $jsonData->meta;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'meta\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'meta\' from MarusiaRequest');
         }
         if (isset($jsonData->state->session)) {
             $this->sessionState = (array)$jsonData->state->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'sessionState\' in MarusiaRequest from source: ' . $source
-            );
+            throw new MarusiaRequestException('Invalid parse \'sessionState\' from MarusiaRequest');
         }
         if (isset($jsonData->state->user)) {
             $this->userState = (array)$jsonData->state->user;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'userState\' in MarusiaRequest from source: ' . $source);
+            throw new MarusiaRequestException('Invalid parse \'userState\' from MarusiaRequest');
         }
     }
 
@@ -111,7 +110,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает распознаные слова в виде массива строк /
+     * Возвращает распознанные слова в виде массива строк /
      * Returns recognized words as an array of strings
      *
      * @return array nlu tokens
@@ -472,7 +471,7 @@ class VKMarSkill
     }
 
     /**
-     * Устанвливает пуш уведомление с текстом $text и нагрузкой $payload
+     * Устанавливает пуш уведомление с текстом $text и нагрузкой $payload
      *
      * @link https://dev.vk.com/marusia/notifications
      * @param string $text
