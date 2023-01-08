@@ -18,16 +18,15 @@ class VKMarSkill
     private array $sessionState = [];
     private array $userState = [];
     private array $push = [];
+    private array $card;
     private bool $endSession = false;
 
+
     /**
-     * Создает объект для работы с запросами от Маруси /
-     * Creates an object for working with requests from Marusia
+     * Создает объект для работы с запросами от Маруси
      *
      * @link https://dev.vk.com/marusia/api
-     *
      * @param string $json запрос от Маруси в виде JSON / request from Marusia in the form of JSON
-     *
      * @throws MarusiaRequestException
      */
     public function __construct(string $json)
@@ -66,8 +65,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает session запроса /
-     * Returns session form request
+     * Возвращает session запроса
      *
      * @return object session
      */
@@ -77,8 +75,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает version запроса /
-     * Returns version form request
+     * Возвращает version запроса
      *
      * @return string version
      */
@@ -88,8 +85,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает request Маруси /
-     * Returns request from Marusia
+     * Возвращает request Маруси
      *
      * @return object request
      */
@@ -99,8 +95,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает meta запроса Маруси /
-     * Returns meta from Marusia's request
+     * Возвращает meta запроса Маруси
      *
      * @return object meta
      */
@@ -110,11 +105,9 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает распознанные слова в виде массива строк /
-     * Returns recognized words as an array of strings
+     * Возвращает распознанные слова в виде массива строк
      *
      * @return array nlu tokens
-     *
      * @throws MarusiaRequestException
      */
     public function getNluTokens(): array
@@ -127,12 +120,10 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает true, если  хотя бы одно слово из аргументов находится в nluTokens /
-     * Returns true if at least one word of the arguments is in nluTokens
+     * Возвращает true, если  хотя бы одно слово из аргументов находится в nluTokens
      *
      * @param ...$values
      * @return bool result
-     *
      * @throws MarusiaRequestException
      */
     public function existInNluTokens(...$values): bool
@@ -141,11 +132,9 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает название города клиента на русском языке /
-     * Returns the name of the client's city in Russian
+     * Возвращает название города клиента на русском языке
      *
      * @return string city
-     *
      * @throws MarusiaRequestException
      */
     public function getClientCity(): string
@@ -158,11 +147,9 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает языковой стандарт клиента /
-     * Returns the client's language standard
+     * Возвращает языковой стандарт клиента
      *
      * @return string locale
-     *
      * @throws MarusiaRequestException
      */
     public function getClientLocale(): string
@@ -175,11 +162,9 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает часовой пояс клиента /
-     * Returns the client's time zone
+     * Возвращает часовой пояс клиента
      *
      * @return string timezone
-     *
      * @throws MarusiaRequestException
      */
     public function getClientTimezone(): string
@@ -192,12 +177,10 @@ class VKMarSkill
     }
 
     /**
-     * Устанавливает текст ответа /
-     * Sets the response text
+     * Устанавливает текст ответа
      *
      * @param string $text text
      * @return void
-     *
      * @throws MarusiaValidationException
      */
     public function setResponseText(string $text): void
@@ -210,8 +193,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает подготовленный текст для ответа Марусе /
-     * Returns the prepared text for the Marusia response
+     * Возвращает подготовленный текст для ответа Марусе
      *
      * @return string text
      */
@@ -221,14 +203,11 @@ class VKMarSkill
     }
 
     /**
-     * Устанавливает TTS ответа /
-     * Sets the response TTS
+     * Устанавливает TTS ответа
      *
      * @link https://dev.vk.com/marusia/sound
-     *
      * @param string $tts TTS
      * @return void
-     *
      * @throws MarusiaValidationException
      */
     public function setResponseTts(string $tts): void
@@ -241,8 +220,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает подготовленный TTS для ответа Марусе /
-     * Returns the prepared TTS for the Marusia response
+     * Возвращает подготовленный TTS для ответа Марусе
      *
      * @return string TTS
      */
@@ -253,12 +231,10 @@ class VKMarSkill
 
 
     /**
-     * Добавляет кнопку с именем $title /
-     * Adds a button named $title
+     * Добавляет кнопку с именем $title
      *
      * @param string $title
      * @return void
-     *
      * @throws MarusiaValidationException
      */
     public function addResponseButton(string $title): void
@@ -277,12 +253,10 @@ class VKMarSkill
     }
 
     /**
-     * Добавляет кнопки с именами из массива $titles /
-     * Adds buttons with names from the $titles array
+     * Добавляет кнопки с именами из массива $titles
      *
      * @param array $titles
      * @return void
-     *
      * @throws MarusiaValidationException
      */
     public function addResponseButtons(array $titles): void
@@ -298,8 +272,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает массив кнопок для ответа Марусе /
-     * Returns an array of buttons to respond to Marusia
+     * Возвращает массив кнопок для ответа Марусе
      *
      * @return array buttons
      */
@@ -309,8 +282,7 @@ class VKMarSkill
     }
 
     /**
-     * Устанавливает конец сессии /
-     * Sets the end of the session
+     * Устанавливает конец сессии
      *
      * @return void
      */
@@ -320,8 +292,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает статус конца сессии /
-     * Returns the end of session status
+     * Возвращает статус конца сессии
      *
      * @return bool endSession's status
      */
@@ -332,8 +303,7 @@ class VKMarSkill
 
 
     /**
-     * Возвращает состояния сессии (session state) запроса /
-     * Returns the session states of request
+     * Возвращает состояния сессии (session state) запроса
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return array session states
@@ -344,8 +314,7 @@ class VKMarSkill
     }
 
     /**
-     * Устанавливает значение $value по ключу $key в массив состояний сессии /
-     * Sets $value by $key to the array of session states
+     * Устанавливает значение $value по ключу $key в массив состояний сессии
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
@@ -358,8 +327,7 @@ class VKMarSkill
     }
 
     /**
-     * Удаляет состояние сессии по ключу $key /
-     * Deletes the session state by $key
+     * Удаляет состояние сессии по ключу $key
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
@@ -376,8 +344,7 @@ class VKMarSkill
     }
 
     /**
-     * Очищает состояния сессии /
-     * Clears session states
+     * Очищает состояния сессии
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return void
@@ -388,8 +355,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает состояния пользователя (user state) запроса /
-     * Returns the user states of request
+     * Возвращает состояния пользователя (user state) запроса
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @return array user states
@@ -400,8 +366,7 @@ class VKMarSkill
     }
 
     /**
-     * Устанавливает значение $value по ключу $key в массив состояний пользователя /
-     * Sets $value by $key to the array of user states
+     * Устанавливает значение $value по ключу $key в массив состояний пользователя
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @param string $key
@@ -414,8 +379,7 @@ class VKMarSkill
     }
 
     /**
-     * Удаляет состояние пользователя по ключу $key /
-     * Deletes the user state by $key
+     * Удаляет состояние пользователя по ключу $key
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @param string $key
@@ -432,8 +396,7 @@ class VKMarSkill
     }
 
     /**
-     * Очищает состояния пользователя /
-     * Clears session states
+     * Очищает состояния пользователя
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @return void
@@ -447,8 +410,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает ассоциативный массив состояний сессии /
-     * Returns an associative array of session states
+     * Возвращает ассоциативный массив состояний сессии
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return array
@@ -459,8 +421,7 @@ class VKMarSkill
     }
 
     /**
-     * Возвращает ассоциативный массив состояний пользователя /
-     * Returns an associative array of user states
+     * Возвращает ассоциативный массив состояний пользователя
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @return array
@@ -492,12 +453,10 @@ class VKMarSkill
         } else {
             throw new MarusiaValidationException("Length of payload for Push should be equal 1");
         }
-
     }
 
     /**
-     * Возвращает установленное пуш уведомление /
-     * Returns the installed push notification
+     * Возвращает установленное пуш уведомление
      *
      * @link https://dev.vk.com/marusia/notifications
      * @return array
@@ -508,8 +467,38 @@ class VKMarSkill
     }
 
     /**
-     * Формирует и возвращает JSON ответ для Маруси /
-     * Generates and returns a JSON response for Marusia
+     * Добавляет изображение с $imageId из раздела настроек 'Медиафайлы' в структуру card
+     *
+     * @link https://dev.vk.com/marusia/cards#Изображения
+     * @param int $imageId
+     * @return void
+     * @throws MarusiaValidationException
+     */
+    public function addBigImage(int $imageId): void
+    {
+        if ($imageId > 0) {
+            if (isset($this->card["type"])) {
+                $this->card = array(
+                    "type" => "ItemsList",
+                    "items" => array(
+                        array("image_id" => $this->card["image_id"])
+                    )
+                );
+                $this->card["items"][] = array("image_id" => $imageId);
+            } else {
+                $this->card = array(
+                    "type" => "BigImage",
+                    "image_id" => $imageId
+                );
+            }
+        } else {
+            throw new MarusiaValidationException("imageId for BigImage should be > 0");
+        }
+
+    }
+
+    /**
+     * Формирует и возвращает JSON ответ для Маруси
      *
      * @link https://dev.vk.com/marusia/api#Структура%20ответа
      * @return string
@@ -545,5 +534,4 @@ class VKMarSkill
 
         return json_encode($response);
     }
-
 }
