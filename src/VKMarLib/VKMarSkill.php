@@ -5,7 +5,7 @@ namespace VKMarLib;
 use VKMarLib\Exceptions\ResponseException;
 use VKMarLib\Exceptions\RequestException;
 use VKMarLib\Exceptions\ValidationException;
-use VKMarLib\Card;
+use VKMarLib\Classes\Card;
 
 /**
  * Основной класс для работы с навыком Маруси
@@ -22,7 +22,7 @@ class VKMarSkill
     private array $sessionState = [];
     private array $userState = [];
     private array $push = [];
-    private array $cards;
+    private array $cards = [];
     private bool $endSession = false;
 
 

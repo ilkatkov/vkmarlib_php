@@ -1,6 +1,6 @@
 <?php
 
-namespace VKMarLib;
+namespace VKMarLib\Classes;
 
 use VKMarLib\Exceptions\ArgumentException;
 use VKMarLib\Exceptions\NotAvailableForActionException;
