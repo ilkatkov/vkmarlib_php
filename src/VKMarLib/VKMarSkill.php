@@ -2,10 +2,14 @@
 
 namespace VKMarLib;
 
-use VKMarLib\Exceptions\MarusiaResponseException;
-use VKMarLib\Exceptions\MarusiaRequestException;
-use VKMarLib\Exceptions\MarusiaValidationException;
+use VKMarLib\Exceptions\ResponseException;
+use VKMarLib\Exceptions\RequestException;
+use VKMarLib\Exceptions\ValidationException;
+use VKMarLib\Card;
 
+/**
+ * Основной класс для работы с навыком Маруси
+ */
 class VKMarSkill
 {
     private string $version;
@@ -18,7 +22,7 @@ class VKMarSkill
     private array $sessionState = [];
     private array $userState = [];
     private array $push = [];
-    private array $card;
+    private array $cards;
     private bool $endSession = false;
 
 
@@ -26,8 +30,8 @@ class VKMarSkill
      * Создает объект для работы с запросами от Маруси
      *
      * @link https://dev.vk.com/marusia/api
-     * @param string $json запрос от Маруси в виде JSON / request from Marusia in the form of JSON
-     * @throws MarusiaRequestException
+     * @param string $json запрос от Маруси в виде JSON
+     * @throws RequestException
      */
     public function __construct(string $json)
     {
@@ -35,32 +39,32 @@ class VKMarSkill
         if (isset($jsonData->version)) {
             $this->version = $jsonData->version;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'version\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'version\' from MarusiaRequest');
         }
         if (isset($jsonData->session)) {
             $this->session = $jsonData->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'version\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'version\' from MarusiaRequest');
         }
         if (isset($jsonData->request)) {
             $this->request = $jsonData->request;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'request\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'request\' from MarusiaRequest');
         }
         if (isset($jsonData->meta)) {
             $this->meta = $jsonData->meta;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'meta\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'meta\' from MarusiaRequest');
         }
         if (isset($jsonData->state->session)) {
             $this->sessionState = (array)$jsonData->state->session;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'sessionState\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'sessionState\' from MarusiaRequest');
         }
         if (isset($jsonData->state->user)) {
             $this->userState = (array)$jsonData->state->user;
         } else {
-            throw new MarusiaRequestException('Invalid parse \'userState\' from MarusiaRequest');
+            throw new RequestException('Invalid parse \'userState\' from MarusiaRequest');
         }
     }
 
@@ -108,14 +112,14 @@ class VKMarSkill
      * Возвращает распознанные слова в виде массива строк
      *
      * @return array nlu tokens
-     * @throws MarusiaRequestException
+     * @throws RequestException
      */
     public function getNluTokens(): array
     {
         if (isset($this->getRequest()->nlu->tokens)) {
             return $this->getRequest()->nlu->tokens;
         } else {
-            throw new MarusiaRequestException('nluTokens is not defined');
+            throw new RequestException('nluTokens is not defined');
         }
     }
 
@@ -124,7 +128,7 @@ class VKMarSkill
      *
      * @param ...$values
      * @return bool result
-     * @throws MarusiaRequestException
+     * @throws RequestException
      */
     public function existInNluTokens(...$values): bool
     {
@@ -135,14 +139,14 @@ class VKMarSkill
      * Возвращает название города клиента на русском языке
      *
      * @return string city
-     * @throws MarusiaRequestException
+     * @throws RequestException
      */
     public function getClientCity(): string
     {
         if (isset($this->getMeta()->_city_ru)) {
             return $this->getMeta()->_city_ru;
         } else {
-            throw new MarusiaRequestException('City is not defined');
+            throw new RequestException('City is not defined');
         }
     }
 
@@ -150,14 +154,14 @@ class VKMarSkill
      * Возвращает языковой стандарт клиента
      *
      * @return string locale
-     * @throws MarusiaRequestException
+     * @throws RequestException
      */
     public function getClientLocale(): string
     {
         if (isset($this->getMeta()->locale)) {
             return $this->getMeta()->locale;
         } else {
-            throw new MarusiaRequestException('Locale is not defined');
+            throw new RequestException('Locale is not defined');
         }
     }
 
@@ -165,14 +169,14 @@ class VKMarSkill
      * Возвращает часовой пояс клиента
      *
      * @return string timezone
-     * @throws MarusiaRequestException
+     * @throws RequestException
      */
     public function getClientTimezone(): string
     {
         if (isset($this->getMeta()->timezone)) {
             return $this->getMeta()->timezone;
         } else {
-            throw new MarusiaRequestException('Timezone is not defined');
+            throw new RequestException('Timezone is not defined');
         }
     }
 
@@ -181,14 +185,14 @@ class VKMarSkill
      *
      * @param string $text text
      * @return void
-     * @throws MarusiaValidationException
+     * @throws ValidationException
      */
     public function setResponseText(string $text): void
     {
         if (strlen($text) > 0) {
             $this->responseText = $text;
         } else {
-            throw new MarusiaValidationException("ResponseText cannot be empty");
+            throw new ValidationException("ResponseText cannot be empty");
         }
     }
 
@@ -208,14 +212,14 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/sound
      * @param string $tts TTS
      * @return void
-     * @throws MarusiaValidationException
+     * @throws ValidationException
      */
     public function setResponseTts(string $tts): void
     {
         if (strlen($tts) > 0) {
             $this->responseTts = $tts;
         } else {
-            throw new MarusiaValidationException("ResponseTts cannot be empty");
+            throw new ValidationException("ResponseTts cannot be empty");
         }
     }
 
@@ -235,7 +239,7 @@ class VKMarSkill
      *
      * @param string $title
      * @return void
-     * @throws MarusiaValidationException
+     * @throws ValidationException
      */
     public function addResponseButton(string $title): void
     {
@@ -248,7 +252,7 @@ class VKMarSkill
                 $this->buttons[] = $button;
             }
         } else {
-            throw new MarusiaValidationException("Button's title cannot be empty");
+            throw new ValidationException("Button's title cannot be empty");
         }
     }
 
@@ -257,7 +261,7 @@ class VKMarSkill
      *
      * @param array $titles
      * @return void
-     * @throws MarusiaValidationException
+     * @throws ValidationException
      */
     public function addResponseButtons(array $titles): void
     {
@@ -266,7 +270,7 @@ class VKMarSkill
                 $this->addResponseButton($title);
             }
         } else {
-            throw new MarusiaValidationException('Array $titles cannot be empty');
+            throw new ValidationException('Array $titles cannot be empty');
         }
 
     }
@@ -332,14 +336,14 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @param string $key
      * @return void
-     * @throws MarusiaResponseException
+     * @throws ResponseException
      */
     public function delResponseSessionState(string $key): void
     {
         if (isset($this->sessionState[$key])) {
             unset($this->sessionState[$key]);
         } else {
-            throw new MarusiaResponseException("key " . $key . " not defined in sessionState");
+            throw new ResponseException("key " . $key . " not defined in sessionState");
         }
     }
 
@@ -384,14 +388,14 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @param string $key
      * @return void
-     * @throws MarusiaResponseException
+     * @throws ResponseException
      */
     public function delResponseUserState(string $key): void
     {
         if (isset($this->userState[$key])) {
             $this->userState[$key] = null;
         } else {
-            throw new MarusiaResponseException("key " . $key . " not defined in userState");
+            throw new ResponseException("key " . $key . " not defined in userState");
         }
     }
 
@@ -437,7 +441,7 @@ class VKMarSkill
      * @link https://dev.vk.com/marusia/notifications
      * @param string $text
      * @param array $payload
-     * @throws MarusiaValidationException
+     * @throws ValidationException
      * @return void
      */
     public function setPush(string $text, array $payload): void
@@ -445,13 +449,13 @@ class VKMarSkill
         if (strlen($text) > 0) {
             $this->push["push_text"] = $text;
         } else {
-            throw new MarusiaValidationException("Text for Push cannot be empty");
+            throw new ValidationException("Text for Push cannot be empty");
         }
 
         if (count(array_keys($payload)) == 1) {
             $this->push["payload"] = $payload;
         } else {
-            throw new MarusiaValidationException("Length of payload for Push should be equal 1");
+            throw new ValidationException("Length of payload for Push should be equal 1");
         }
     }
 
@@ -467,77 +471,27 @@ class VKMarSkill
     }
 
     /**
-     * Добавляет изображение с $imageId из раздела настроек 'Медиафайлы' в структуру card
+     * Возвращает карточки ответа
      *
-     * @link https://dev.vk.com/marusia/cards#Изображения
-     * @param int $imageId
-     * @return void
-     * @throws MarusiaValidationException
+     * @link https://dev.vk.com/marusia/cards
+     * @return array
      */
-    public function addBigImage(int $imageId): void
+    private function getCards() : array
     {
-        if ($imageId > 0) {
-            if (isset($this->card["type"])) {
-                $this->card = array(
-                    "type" => "ItemsList",
-                    "items" => array(
-                        array("image_id" => $this->card["image_id"])
-                    )
-                );
-                $this->card["items"][] = array("image_id" => $imageId);
-            } else {
-                $this->card = array(
-                    "type" => "BigImage",
-                    "image_id" => $imageId
-                );
-            }
-        } else {
-            throw new MarusiaValidationException("imageId for BigImage should be > 0");
-        }
+        return $this->cards;
     }
 
     /**
-     * @throws MarusiaValidationException
+     * Добавляет заполненную карточку в ответ Маруси
+     *
+     * @link https://dev.vk.com/marusia/cards
+     * @param Card $card
+     * @return void
+     * @throws ValidationException
      */
-    public function addStylizedLink(string $title, string $text, string $url, int $imageId) {
-        if (strlen($title) < 0) {
-            throw new MarusiaValidationException("Length of \"title\" for StylizedLink cannot be empty");
-        }
-        if (strlen($text) < 0) {
-            throw new MarusiaValidationException("Length of \"text\" for StylizedLink cannot be empty");
-        }
-        if (strlen($url) < 0) {
-            throw new MarusiaValidationException("Length of \"url\" for StylizedLink cannot be empty");
-        }
-        if ($imageId < 0) {
-            throw new MarusiaValidationException("imageId for StylizedLink should be > 0");
-        }
-        if (isset($this->card["type"])) {
-            $this->card = array(
-                "type" => "ItemsList",
-                "items" => array(
-                    array("image_id" => $this->card["image_id"])
-                )
-            );
-            $this->card["items"][] = array(
-                "type" => "Link",
-                "url" => "[{$url}]",
-                "title" => $title,
-                "text" => $text,
-                "image_id" => $this->card["image_id"]
-            );
-        } else {
-            $this->card = array(
-                "type" => "BigImage",
-                "image_id" => $imageId
-            );
-        }
-
-    }
-
-    private function getItemsList() : array
+    public function addCard(Card $card) : void
     {
-        return $this->card;
+        $this->cards[] = $card->getCard();
     }
 
     /**
@@ -572,8 +526,10 @@ class VKMarSkill
             $response["response"]["buttons"] = $this->getResponseButtons();
         }
 
-        if (count($this->card) > 0) {
-            $response["response"]["card"] = $this->getItemsList();
+        if (count($this->cards) == 1) {
+            $response["response"]["card"] = $this->getCards()[0];
+        } elseif (count($this->cards) > 1) {
+            $response["response"]["commands"] = $this->getCards();
         }
 
         $response["session_state"] = $this->getResponseSessionStates();
