@@ -494,7 +494,50 @@ class VKMarSkill
         } else {
             throw new MarusiaValidationException("imageId for BigImage should be > 0");
         }
+    }
 
+    /**
+     * @throws MarusiaValidationException
+     */
+    public function addStylizedLink(string $title, string $text, string $url, int $imageId) {
+        if (strlen($title) < 0) {
+            throw new MarusiaValidationException("Length of \"title\" for StylizedLink cannot be empty");
+        }
+        if (strlen($text) < 0) {
+            throw new MarusiaValidationException("Length of \"text\" for StylizedLink cannot be empty");
+        }
+        if (strlen($url) < 0) {
+            throw new MarusiaValidationException("Length of \"url\" for StylizedLink cannot be empty");
+        }
+        if ($imageId < 0) {
+            throw new MarusiaValidationException("imageId for StylizedLink should be > 0");
+        }
+        if (isset($this->card["type"])) {
+            $this->card = array(
+                "type" => "ItemsList",
+                "items" => array(
+                    array("image_id" => $this->card["image_id"])
+                )
+            );
+            $this->card["items"][] = array(
+                "type" => "Link",
+                "url" => "[{$url}]",
+                "title" => $title,
+                "text" => $text,
+                "image_id" => $this->card["image_id"]
+            );
+        } else {
+            $this->card = array(
+                "type" => "BigImage",
+                "image_id" => $imageId
+            );
+        }
+
+    }
+
+    private function getItemsList() : array
+    {
+        return $this->card;
     }
 
     /**
@@ -527,6 +570,10 @@ class VKMarSkill
 
         if (isset($this->buttons)) {
             $response["response"]["buttons"] = $this->getResponseButtons();
+        }
+
+        if (count($this->card) > 0) {
+            $response["response"]["card"] = $this->getItemsList();
         }
 
         $response["session_state"] = $this->getResponseSessionStates();
