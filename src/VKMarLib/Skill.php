@@ -10,7 +10,7 @@ use VKMarLib\Classes\Card;
 /**
  * Основной класс для работы с навыком Маруси
  */
-class VKMarSkill
+class Skill
 {
     private string $version;
     private object $session;
