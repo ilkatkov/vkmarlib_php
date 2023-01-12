@@ -1,6 +1,6 @@
 {
-    "name": "ilkatkov/vkmarlib",
-    "description": "Marusia VK Library for PHP",
+    "name": "ilkatkov/vkmarlib_php",
+    "description": "Marusia VK Library",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -10,6 +10,10 @@
     ],
     "minimum-stability": "stable",
     "require": {
-      "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "VKMarLib\\": "src/VKMarLib/"
+        }
     }
 }
