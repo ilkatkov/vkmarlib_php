@@ -2,6 +2,9 @@
     "name": "ilkatkov/vkmarlib_php",
     "description": "Marusia VK Library",
     "type": "library",
+    "require": {
+        "php": "^7.4"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -9,10 +12,7 @@
             "email": "ilkatkov@vk.com"
         }
     ],
-    "minimum-stability": "stable",
-    "require": {
-        "php": "^7.4"
-    },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "VKMarLib\\": "src/"
