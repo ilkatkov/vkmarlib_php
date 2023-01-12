@@ -5,15 +5,17 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Ilya Katkov"
+            "name": "Ilya Katkov",
+            "email": "ilkatkov@vk.com"
         }
     ],
     "minimum-stability": "stable",
     "require": {
+        "php": "^7.4"
     },
     "autoload": {
         "psr-4": {
-            "VKMarLib\\": "src/VKMarLib/"
+            "VKMarLib\\": "src/"
         }
     }
 }
