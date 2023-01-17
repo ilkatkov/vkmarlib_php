@@ -12,10 +12,10 @@
             "email": "ilkatkov@vk.com"
         }
     ],
-    "minimum-stability": "alpha",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "VKMarLib\\": "src/"
+            "VKMarLib\\": "src/VKMarLib/"
         }
     }
 }
