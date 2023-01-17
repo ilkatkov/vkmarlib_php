@@ -21,6 +21,20 @@ trait SessionStates
     }
 
     /**
+     * Возвращает состояние сессии (session state) запроса по ключу $key
+     *
+     * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
+     * @return mixed значение состояния
+     */
+    public function getSessionState(string $key)
+    {
+        if (isset($this->sessionState[$key])) {
+            return $this->sessionState[$key];
+        }
+        return null;
+    }
+
+    /**
      * Устанавливает значение $value по ключу $key в массив состояний сессии
      *
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
