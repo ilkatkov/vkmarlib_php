@@ -56,7 +56,7 @@ trait UserStates
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
      * @return void
      */
-    public function clearUserState(): void
+    public function clearUserStates(): void
     {
         $keys = array_keys($this->getUserStates());
         for ($i = 0; $i < count($keys); $i++) {

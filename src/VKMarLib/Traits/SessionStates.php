@@ -56,7 +56,7 @@ trait SessionStates
      * @link https://dev.vk.com/marusia/session-state#Хранение%20данных%20в%20сессии
      * @return void
      */
-    public function clearSessionState(): void
+    public function clearSessionStates(): void
     {
         $this->sessionState = [];
     }
