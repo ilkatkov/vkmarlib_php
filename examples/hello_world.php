@@ -7,6 +7,6 @@ use VKMarLib\Skill;
 $content = file_get_contents('php://input');
 $m = new Skill($content);
 
-$m->setResponseText("Hello, world!");
+$m->setText("Hello, world!");
 $m->setEndSession();
 echo $m->getResponseJson();

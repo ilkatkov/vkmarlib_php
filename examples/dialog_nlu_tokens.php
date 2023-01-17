@@ -7,15 +7,15 @@ use VKMarLib\Skill;
 $content = file_get_contents('php://input');
 $m = new Skill($content);
 
-if ($m->existInNluTokens("привет", "здравствуйте")) {
-    $m->setResponseText("Добрый день! Это пример диалога.");
-} elseif ($m->existInNluTokens("автор")) {
-    $m->setResponseText("Эту библиотеку написал Илья Катков.");
-} elseif ($m->existInNluTokens("пока", "стоп")) {
-    $m->setResponseText("Пока-пока!");
+if ($m->existInTokens("привет", "здравствуйте")) {
+    $m->setText("Добрый день! Это пример диалога.");
+} elseif ($m->existInTokens("автор")) {
+    $m->setText("Эту библиотеку написал Илья Катков.");
+} elseif ($m->existInTokens("пока", "стоп")) {
+    $m->setText("Пока-пока!");
     $m->setEndSession();
 } else {
-    $m->setResponseText("Даже не знаю, что вам на это ответить.");
+    $m->setText("Даже не знаю, что вам на это ответить.");
 }
 
 echo $m->getResponseJson();
