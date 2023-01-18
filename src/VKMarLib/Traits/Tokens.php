@@ -33,6 +33,6 @@ trait Tokens
      */
     public function existInTokens(...$values): bool
     {
-        return count(array_intersect($values, $this->getNluTokens())) > 0;
+        return count(array_intersect($values, $this->getTokens())) > 0;
     }
 }
