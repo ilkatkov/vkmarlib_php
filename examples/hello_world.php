@@ -1,4 +1,5 @@
 <?php
+// пример Hello, world!
 
 include_once __DIR__ . '../vendor/autoload.php';
 

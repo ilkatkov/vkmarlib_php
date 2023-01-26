@@ -1,4 +1,5 @@
 <?php
+// пример построения диалога с пользователем
 
 include_once __DIR__ . '../vendor/autoload.php';
 

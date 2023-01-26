@@ -18,7 +18,7 @@ trait Push
      * @throws ValidationException
      * @return void
      */
-    public function setPush(string $text, array $payload): void
+    public function setPush(string $text, array $payload = []): void
     {
         if (strlen($text) > 0) {
             $this->push["push_text"] = $text;
@@ -26,9 +26,10 @@ trait Push
             throw new ValidationException("Text for Push cannot be empty");
         }
 
-        if (count(array_keys($payload)) == 1) {
+        $payloadLength = count(array_keys($payload));
+        if ($payloadLength == 1) {
             $this->push["payload"] = $payload;
-        } else {
+        } elseif ($payloadLength > 1) {
             throw new ValidationException("Length of payload for Push should be equal 1");
         }
     }

@@ -21,6 +21,20 @@ trait UserStates
     }
 
     /**
+     * Возвращает состояние пользователя (user state) запроса по ключу $key
+     *
+     * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
+     * @return mixed ключ состояния
+     */
+    public function getUserState(string $key)
+    {
+        if (isset($this->userState[$key])) {
+            return $this->userState[$key];
+        }
+        return null;
+    }
+
+    /**
      * Устанавливает значение $value по ключу $key в массив состояний пользователя
      *
      * @link https://dev.vk.com/marusia/session-state#Персистентное%20хранение%20данных
